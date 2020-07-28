@@ -2,7 +2,7 @@
 
 # Expat Journal API:
 
-### heroku url: https://better-prof.herokuapp.com/
+### heroku url: INPROGRESS
 
 ## Authentication Endpoints:
 
