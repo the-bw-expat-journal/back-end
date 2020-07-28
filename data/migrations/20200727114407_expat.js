@@ -18,9 +18,10 @@ exports.up = function(knex) {
   })
   .createTable('posts', tbl => {
       tbl.increments();
-      tbl.string('img_url', 128);
-      tbl.string('title', 128);
+      tbl.string('img_url', 128).notNullable();
+      tbl.string('title', 128).notNullable();
       tbl.string('description', 128);
+      tbl.string('location', 128);
       tbl.integer("username").notNullable()
         .unsigned()
         .references("username")
