@@ -21,18 +21,18 @@ exports.up = function(knex) {
       tbl.string('img_url', 128);
       tbl.string('title', 128);
       tbl.string('description', 128);
-      tbl.integer("user_id").notNullable()
+      tbl.integer("username").notNullable()
         .unsigned()
-        .references("id")
+        .references("username")
         .inTable("users")
         .onUpdate("CASCADE")
         .onDelete("RESTRICT")
   })
   .createTable('comments', tbl => {
       tbl.increments();
-      tbl.integer("user_id").notNullable()
+      tbl.integer("username").notNullable()
         .unsigned()
-        .references("id")
+        .references("username")
         .inTable("users")
         .onUpdate("CASCADE")
         .onDelete("RESTRICT")
@@ -46,9 +46,9 @@ exports.up = function(knex) {
   })
   .createTable('likes', tbl => {
     tbl.increments();
-    tbl.integer("user_id").notNullable()
+    tbl.integer("username").notNullable()
       .unsigned()
-      .references("id")
+      .references("username")
       .inTable("users")
       .onUpdate("CASCADE")
       .onDelete("RESTRICT")

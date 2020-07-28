@@ -12,14 +12,5 @@ router.get("/users", (req, res) => {
         })
 })
 
-router.post("/register", (req, res) => {
-    db.addUser(req.body)
-        .then(newUserId=>{
-            res.status(200).json(newUserId)
-        })
-        .catch(error=>{
-            res.status(500).json(error)
-        })
-})
 
 module.exports=router;
