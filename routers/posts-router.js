@@ -1,9 +1,10 @@
 const express = require("express");
 const db = require("./model");
 const router = express.Router();
+const jwt = require("jsonwebtoken")
 
 
-router.get("/posts", (req, res) => {
+router.get("/allPosts", (req, res) => {
     db.getPosts()
         .then(posts => {
             res.status(200).json(posts)
@@ -13,34 +14,77 @@ router.get("/posts", (req, res) => {
         })
 })
 
-router.post("/:username/posts", (req, res) => {
-    const username=req.params.username;
-    const newPost = {
-        ...req.body,
-        username: username
+
+// router.post("/:username/posts", (req, res) => {
+//     const username=req.params.username;
+//     const newPost = {
+//         ...req.body,
+//         username: username
+//     }
+//     console.log(newPost)
+//     db.addPost(newPost)
+//         .then(newPostId=>{
+//             res.status(200).json(newPostId)
+//         })
+//         .catch(error=>{
+//             res.status(500).json(error)
+//         })
+// })
+
+router.post("/", (req, res) => {
+    const token = req.headers.authorization;
+    const secret = process.env.JWT_SECRET || "secret";
+    let newPost = req.body;
+
+    if(token){
+        jwt.verify(token, secret, (error, decodedToken) => {
+            if(error) {
+                res.status(401).json({ you: "Session Expired. Please re-login." })
+            } else {
+                console.log(decodedToken)
+                newPost = {
+                    ...newPost,
+                    username: decodedToken.username
+                }
+                db.addPost(newPost)
+                    .then(newPostId => {
+                        res.status(200).json(newPostId)
+                    })
+                    .catch(error => {
+                        res.status(500).json(error)
+                    })
+            }
+        });
+    } else {
+        res.status(401).json({ message: "Please login to add a post." })
     }
-    console.log(newPost)
-    db.addPost(newPost)
-        .then(newPostId=>{
-            res.status(200).json(newPostId)
-        })
-        .catch(error=>{
-            res.status(500).json(error)
-        })
 })
 
-router.get("/:username/posts", (req, res) => {
-    const username=req.params.username;
-    db.getPostsFromUser(username)
-        .then(posts=>{
-            res.status(200).json(posts)
-        })
-        .catch(error=>{
-            res.status(500).json(error)
-        })
+router.get("/", (req, res) => {
+    const token = req.headers.authorization;
+    const secret = process.env.JWT_SECRET || "secret";
+
+    if(token){
+        jwt.verify(token, secret, (error, decodedToken) => {
+            if(error) {
+                res.status(401).json({ you: "Session Expired. Please re-login to see your posts." })
+            } else {
+                console.log(decodedToken)
+                db.getPostsFromUser(decodedToken.username)
+                    .then(posts=>{
+                        res.status(200).json(posts)
+                    })
+                    .catch(error=>{
+                        res.status(500).json(error)
+                    })
+            }
+        });
+    } else {
+        res.status(401).json({ message: "Please login to see your posts." })
+    }
 })
 
-router.get("/posts/:id", (req, res) => {
+router.get("/:id", (req, res) => {
     db.getPost(req.params.id)
         .then(post => {
             res.status(200).json(post)
@@ -50,7 +94,7 @@ router.get("/posts/:id", (req, res) => {
         })
 })
 
-router.delete("/posts/:id", (req, res) => {
+router.delete("/:id", (req, res) => {
     db.deletePost(req.params.id)
         .then(post => {
             res.status(200).json(post)
@@ -60,7 +104,7 @@ router.delete("/posts/:id", (req, res) => {
         })
 })
 
-router.put("/posts/:id", (req, res) => {
+router.put("/:id", (req, res) => {
     db.editPost(req.body, req.params.id)
         .then(post => {
             res.status(200).json(post)
@@ -70,7 +114,7 @@ router.put("/posts/:id", (req, res) => {
         })
 })
 
-router.post("/posts/:id/comments", (req, res) => {
+router.post("/:id/comments", (req, res) => {
     const newComment = {
         ...req.body,
         post_id: req.params.id

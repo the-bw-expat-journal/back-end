@@ -10,13 +10,12 @@ const postsRouter = require('./routers/posts-router')
 server.use(express.json());
 server.use(cors());
 
-server.use('/api', usersRouter);
 server.use('/api/auth', authRouter);
-server.use('/api', authMiddleware, postsRouter)
+server.use('/api/users', usersRouter);
+server.use('/api/posts', authMiddleware, postsRouter)
 
-server.get('/', (req, res, next) => {
+server.get('/', (req, res) => {
     res.status(200).json({ status: "Server is up and running!"})
-    next()
 })
 
 module.exports = server;

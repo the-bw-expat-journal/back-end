@@ -24,7 +24,7 @@ router.post('/register', (req, res) => {
             })
     }else{
         res.status(400).json({
-            message: "Please... You need to provide a username and a password."
+            message: "Please provide a username, email, password, name, and location."
         })
     }
 })
@@ -38,7 +38,14 @@ router.post('/login', (req, res) => {
                 if( user && bcryptjs.compareSync(password, user.password)) {
                     const token = createToken(user);
 
-                    res.status(200).json({ token, message: "Welcome Expat."})
+                    res.status(200).json({ token,
+                        message: `Welcome Expat, ${username}!`, 
+                        user: {
+                            id: user.id,
+                            username: user.username,
+                            name: user.name
+                        }
+                    })
                 } else {
                     res.status(401).json({ message: "Invalid credentials" });
                 }
