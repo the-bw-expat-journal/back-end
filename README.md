@@ -2,7 +2,7 @@
 
 # Expat Journal API:
 
-### heroku url: INPROGRESS
+### heroku url: https://expat-journal-web31.herokuapp.com
 
 ## Authentication Endpoints:
 
@@ -49,3 +49,5 @@ Required fields for logging in a user:
 ```
 
 Returns token used for authorization on other endpoints, and user's info.
+
+### Posts
