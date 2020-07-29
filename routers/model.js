@@ -16,6 +16,10 @@ function findUser(User){
         .orderBy("users.id");
 }
 
+function deleteUser(user){
+    return db("users").where({ username: user }).del()
+}
+
 function getPosts(){
     return db("posts")
 }
@@ -64,10 +68,22 @@ function editComment(edittedComment, commentId){
     return db("comments").where({ id: commentId }).update(edittedComment)
 }
 
+function likePost(incomingLike){
+    return db("likes").insert(incomingLike, "id")
+}
+
+function removeLike(incomingUnlike){
+    return db("likes").where({ username: incomingUnlike.username, post_id: incomingUnlike.post_id }).del()
+}
+
+function checkLikeOnPost(check){
+    return db("likes").where({ username: check.username, post_id: check.post_id })
+}
 module.exports = {
     getUsers,
     addUser,
     findUser,
+    deleteUser,
     getPosts,
     addPost,
     getPostsFromUser,
@@ -79,5 +95,8 @@ module.exports = {
     getAllComments,
     findComment,
     deleteComment,
-    editComment
+    editComment,
+    likePost,
+    removeLike,
+    checkLikeOnPost
 }
