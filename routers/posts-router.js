@@ -3,6 +3,7 @@ const db = require("./model");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const { render } = require("../server");
+const e = require("express");
 
 
 router.get("/allPosts", (req, res) => {
@@ -136,6 +137,52 @@ router.get("/:id/comments", (req, res) =>{
     db.getCommentsForPost(req.params.id)
         .then(comments =>{
             res.status(200).json(comments)
+        })
+        .catch(error => {
+            res.status(500).json(error)
+        })
+})
+
+router.post('/:id/like', (req, res) => {
+    const newLike = {
+        username: req.decodedToken.username,
+        post_id: req.params.id
+    }
+    db.likePost(newLike)
+        .then(newLikeId => {
+            res.status(200).json(newLikeId)
+        })
+        .catch(error => {
+            res.status(500).json(error)
+        })
+})
+
+router.delete('/:id/like', (req, res) => {
+    const unlike = {
+        username: req.decodedToken.username,
+        post_id: req.params.id
+    }
+    db.removeLike(unlike)
+        .then(like => {
+            res.status(200).json(like)
+        })
+        .catch(error => {
+            res.status(500).json(error)
+        })
+})
+
+router.get('/:id/like', (req, res) => {  //returns 1 if there is a like on a post. 0 if there is no like.
+    const checklike = {
+        username: req.decodedToken.username,
+        post_id: req.params.id
+    }
+    db.checkLikeOnPost(checklike)
+        .then(result => {
+            if(result.length === 0){
+                res.status(200).json(0)
+            }else{
+                res.status(200).json(1)
+            }
         })
         .catch(error => {
             res.status(500).json(error)

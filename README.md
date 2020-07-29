@@ -49,6 +49,7 @@ Required fields for logging in a user:
 ```
 
 Returns token used for authorization on other endpoints, and user's info.
+## Note: Tokens only last 30 Minutes. Please notify me if you want this to change
 
 # Protected Endpoints (Requires a valid token)
 ---
@@ -137,3 +138,15 @@ If you want to edit the comments text, creator, and the post it belongs to you c
 Though personally... I don't think its a good idea to allow the user to change the post a comment belongs to.
 The same goes for change the creator of a comment.
 I recommend only changing the text field.
+
+---
+
+## Likes
+
+### Authorization token required.
+
+[GET] `/api/posts/:id/like` - Checks if a like exists or not for a User on a Post. Returns 1 if a like exists. Returns 0 if there is no like.
+
+[POST] `/api/posts/:id/like` - Adds a like to specified post. The like is tied to the user that is currently logged in.
+
+[DELETE] `/api/posts/:id/like` - Removes a users like on specified post.

@@ -23,5 +23,15 @@ router.get("/:username/posts", (req, res) => {
         })
 })
 
+router.delete("/:username", (req, res) => {
+    db.deleteUser(req.params.username)
+        .then(deletedSuccess => {
+            res.status(200).json({message: `hahahahah loser ${req.params.username} been deleted`, deletedSuccess})
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(500).json({error: 'wow we have an error', error})
+        })
+})
 
 module.exports=router;
