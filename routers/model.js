@@ -1,17 +1,6 @@
 const db = require("../data/dbConfig");
 
-module.exports = {
-    getUsers,
-    addUser,
-    findUser,
-    getPosts,
-    addPost,
-    getPostsFromUser,
-    getPost,
-    deletePost,
-    editPost,
-    addComment
-}
+
 
 function getUsers(){
     return db("users")
@@ -53,4 +42,42 @@ function editPost(edittedPost, postId){
 
 function addComment(newComment){
     return db("comments").insert(newComment, "id")
+}
+
+function getCommentsForPost(post_id){
+    return db("comments").where({ post_id: post_id })
+}
+
+function getAllComments(){
+    return db("comments")
+}
+
+function findComment(commentId){
+    return db("comments").where({ id: commentId })
+}
+
+function deleteComment(commentId){
+    return db("comments").where({ id: commentId }).del()
+}
+
+function editComment(edittedComment, commentId){
+    return db("comments").where({ id: commentId }).update(edittedComment)
+}
+
+module.exports = {
+    getUsers,
+    addUser,
+    findUser,
+    getPosts,
+    addPost,
+    getPostsFromUser,
+    getPost,
+    deletePost,
+    editPost,
+    addComment,
+    getCommentsForPost,
+    getAllComments,
+    findComment,
+    deleteComment,
+    editComment
 }

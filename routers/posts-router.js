@@ -1,7 +1,8 @@
 const express = require("express");
 const db = require("./model");
 const router = express.Router();
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const { render } = require("../server");
 
 
 router.get("/allPosts", (req, res) => {
@@ -115,14 +116,26 @@ router.put("/:id", (req, res) => {
 })
 
 router.post("/:id/comments", (req, res) => {
+
     const newComment = {
         ...req.body,
-        post_id: req.params.id
+        post_id: req.params.id,
+        username: req.decodedToken.username
     }
     console.log(newComment)
     db.addComment(newComment)
         .then(newComment => {
             res.status(200).json(newComment)
+        })
+        .catch(error => {
+            res.status(500).json(error)
+        })
+})
+
+router.get("/:id/comments", (req, res) =>{
+    db.getCommentsForPost(req.params.id)
+        .then(comments =>{
+            res.status(200).json(comments)
         })
         .catch(error => {
             res.status(500).json(error)

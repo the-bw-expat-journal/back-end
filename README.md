@@ -51,8 +51,9 @@ Required fields for logging in a user:
 Returns token used for authorization on other endpoints, and user's info.
 
 # Protected Endpoints (Requires a valid token)
+---
 
-### Posts
+## Posts
 
 [GET] `/api/posts/all` - See ALL existing posts ALL OF THEM ;)
 
@@ -71,7 +72,7 @@ Fields for creating a new post. (Only 1 of these is required.)
 - description
 
 
-# body request schema:
+### body request schema:
 ```json
 {
     "img_url": "https://image.shutterstock.com/image-photo/beautiful-water-drop-on-dandelion-260nw-789676552.jpg",
@@ -87,3 +88,52 @@ Fields for creating a new post. (Only 1 of these is required.)
 
 [PUT] `/api/posts/:id` - Edit post by id
 
+
+---
+## Comments
+
+### ALL BELOW REQUIRE AUTHENTICATION BY TOKEN
+
+[POST] `/api/posts/:id/comments` - Adds new comment to a specific post.
+
+The comment's creator will be the current logged in user.
+
+Fields for creating a comment.
+```json
+{
+    "text": "Sweet ride dude >:)"
+}
+```
+
+[GET] `/api/posts/:id/comments` - Gets all existing comments for a specific post.
+
+[GET] `/api/comments/all` - Retrieves all existing comments.
+
+[GET] `/api/comments/:id` - Gets a specific post by id
+
+[DELETE] `/api/comments/:id` - Deletes a specific post by id
+
+[PUT] `/api/comments/:id` - Edits a specific post by id
+
+With the put request you can choose what to edit.
+
+If you just want to edit the text, you can do this.
+
+```json
+{
+    "text": "Whoops, this is what I meant to say"
+}
+
+If you want to edit the comments text, creator, and the post it belongs to you can do so as well.
+
+```json
+{
+    "text": "",
+    "username": "kristian",
+    "post_id": ""
+}
+```
+
+Though personally... I don't think its a good idea to allow the user to change the post a comment belongs to.
+The same goes for change the creator of a comment.
+I recommend only changing the text field.
