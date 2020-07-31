@@ -3,7 +3,12 @@ const db = require("./model");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const { render } = require("../server");
-const e = require("express");
+const cloudinary = require("../config/cloudinaryConfig")
+const multer = require("../config/multerConfig")
+const cloudinaryConfig = cloudinary.cloudinaryConfig
+const uploader = cloudinary.uploader
+const multerUploads = multer.multerUploads
+const datauri = multer.datauri
 
 
 router.get("/allPosts", (req, res) => {
@@ -33,33 +38,41 @@ router.get("/allPosts", (req, res) => {
 //         })
 // })
 
-router.post("/", (req, res) => {
+router.post("/", multerUploads.single('img_url'), cloudinaryConfig, (req, res) => {
     const token = req.headers.authorization;
     const secret = process.env.JWT_SECRET || "secret";
     let newPost = req.body;
 
-    if(token){
-        jwt.verify(token, secret, (error, decodedToken) => {
-            if(error) {
-                res.status(401).json({ you: "Session Expired. Please re-login." })
-            } else {
-                console.log(decodedToken)
-                newPost = {
-                    ...newPost,
-                    username: decodedToken.username
-                }
-                db.addPost(newPost)
+    newPost = {
+        ...newPost,
+        username: req.decodedToken.username
+    }
+    // const file = datauri(req)
+    // uploader.upload(file.content,
+    //     { dpr: "auto", responsive: true, width: "auto", crop: "scale"},
+    //     (error, result) => {
+    //         console.log(req.decodedToken)
+    //         newPost = {
+    //             ...newPost,
+    //             img_url: result.secure_url,
+    //             username: req.decodedToken.username
+    //         }
+    //         db.addPost(newPost)
+    //             .then(newPostId => {
+    //                 res.status(200).json({newPostId, result})
+    //             })
+    //             .catch(error => {
+    //                 res.status(500).json(error)
+    //             })
+    // })
+    db.addPost(newPost)
                     .then(newPostId => {
                         res.status(200).json(newPostId)
                     })
                     .catch(error => {
                         res.status(500).json(error)
                     })
-            }
-        });
-    } else {
-        res.status(401).json({ message: "Please login to add a post." })
-    }
+                
 })
 
 router.get("/", (req, res) => {
