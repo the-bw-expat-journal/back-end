@@ -56,7 +56,7 @@ Returns token used for authorization on other endpoints, and user's info.
 
 ## Posts
 
-[GET] `/api/posts/all` - See ALL existing posts ALL OF THEM ;)
+[GET] `/api/posts/allPosts` - See ALL existing posts ALL OF THEM ;)
 
 [GET] `/api/posts` - See all existing posts for user
 
